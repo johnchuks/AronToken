@@ -7,6 +7,7 @@ contract AronToken {
     string public symbol = "ARN";
     string public standard = "AronToken v1.0";
     uint256 public totalSupply;
+    address owner;
 
 
     mapping(address => uint256) public balanceOf;
@@ -16,7 +17,7 @@ contract AronToken {
 
     function AronToken(uint256 _initialSupply) public {
         totalSupply = _initialSupply;
-        address owner = msg.sender;
+        owner = msg.sender;
         balanceOf[owner] = _initialSupply;
     }
 
