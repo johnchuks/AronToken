@@ -20,7 +20,7 @@ contract ('AronTokenSale', function(accounts){
       return tokenSaleInstance.tokenContract();
     }).then((address) => {
       assert.notEqual(address, 0x0, 'has a contract address');
-      return tokenSaleInstance.tokenPrice();
+      return tokenSaleInstance.tokensPrice();
     }).then((price) => {
       assert.equal(price, tokenPrice, 'token price is correct');
     })
@@ -56,6 +56,23 @@ contract ('AronTokenSale', function(accounts){
     return tokenSaleInstance.buyTokens(1000000000, { from: buyer, value: numberOfTokens * tokenPrice })
   }).then((assert.fail)).catch((error) => {
     assert(error.message.indexOf('revert') >=0, 'number of tokens must not be higher than tokens available in the contract')
+  })
+})
+it ('should end sale of tokens', function(){
+  return AronToken.deployed().then((instance) => {
+    tokenInstance = instance;
+    return AronTokenSale.deployed();
+  }).then((instance) => {
+    tokenSaleInstance = instance;
+    return tokenSaleInstance.endSale({ from: buyer });
+  }).then(assert.fail).catch((error) => {
+    assert(error.message.indexOf('revert') >= 0, 'must be an admin to end sale');
+    return tokenSaleInstance.endSale({ from: admin });
+  }).then((receipt) => {
+    return tokenInstance.balanceOf(admin);
+  }).then((balance) => {
+    assert.equal(balance.toNumber(), 999990, 'returns all unsold token to the admin');
+    // check that the token price has been reset when selfdescruct was called
   })
 })
 })

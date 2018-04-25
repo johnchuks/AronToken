@@ -120,4 +120,6 @@ contract('AronToken', function(accounts){
       assert.equal(allowance, 0, 'deduct the amount from the allowance');
     })
   })
+
+ 
 });
